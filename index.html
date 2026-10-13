@@ -1114,7 +1114,11 @@
   }
   });
 
-  addEventListener('load', () => ScrollTrigger.refresh());
+  /* triggers are created out of page order (reveals first, the pinned gallery later), so sort them by
+     position before measuring — otherwise everything below the gallery fires one gallery-length too early */
+  const refreshAll = () => { ScrollTrigger.sort(); ScrollTrigger.refresh(); };
+  addEventListener('load', refreshAll);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refreshAll);
   </script>
 </body>
 </html>
