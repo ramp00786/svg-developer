@@ -1,0 +1,1037 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>New Yashbindu — SVJ Developers</title>
+  <meta name="description" content="New Yashbindu by SVJ Developers — exclusive 2 BHK residences at Bijli Nagar Road, Pimpri-Chinchwad, Pune. You dream it. We build it." />
+  <meta name="theme-color" content="#173f5f" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#3b7ba6', 50: '#eef5fa', 100: '#d6e7f2', 200: '#a9cbe2', 400: '#5d97bf', 600: '#2f6a91', 700: '#24557a' },
+            navy: { DEFAULT: '#173f5f', 900: '#0b1f30', 950: '#071420' },
+            terra: { DEFAULT: '#c8664f', 300: '#e39a86' },
+            silver: '#d3d6db',
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['Manrope', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root { --navy: #173f5f; --brand: #3b7ba6; --terra: #c8664f; }
+    html { scroll-behavior: smooth; }
+    body { background: #f7f9fb; color: #173f5f; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    body.is-loading { overflow: hidden; }
+    ::selection { background: var(--terra); color: #fff; }
+
+    .silver-text {
+      background: linear-gradient(180deg, #f4f5f7 0%, #c4c8ce 45%, #ffffff 55%, #aeb3ba 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .split-line { display: block; overflow: hidden; }
+    .split-char { display: inline-block; will-change: transform; }
+
+    /* sky layers behind the WebGL canvas */
+    .sky { position: absolute; inset: 0; transition: none; }
+    .sky-night { background: radial-gradient(120% 80% at 70% 10%, #3e6688 0%, #1d3956 38%, #0b1f30 78%, #071420 100%); }
+    .sky-day   { background: radial-gradient(120% 80% at 70% 10%, #e8f4fc 0%, #a9d2ee 40%, #5d97bf 85%, #3b7ba6 100%); opacity: 0; }
+
+    .hex-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98' viewBox='0 0 56 98'%3E%3Cpath d='M28 0l28 16v33L28 65 0 49V16zM28 65l28 16v33M28 65L0 81v33' fill='none' stroke='%23ffffff' stroke-opacity='.07' stroke-width='1'/%3E%3C/svg%3E");
+    }
+    .grain::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .06; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .nav-scrolled { background: rgba(255,255,255,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 1px 0 rgba(23,63,95,.08); }
+    .nav-scrolled .nav-ink { color: #173f5f; }
+    .nav-scrolled .logo-svj { background: none; -webkit-background-clip: initial; background-clip: initial; color: #173f5f; }
+
+    .link-underline { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .4s ease; }
+    .link-underline:hover { background-size: 100% 1px; }
+
+    .heading-rule { transform-origin: left center; }
+
+    .spec-card { transform-style: preserve-3d; }
+    .spec-card::before {
+      content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .4s;
+      background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 50%), rgba(59,123,166,.14), transparent 45%);
+    }
+    .spec-card:hover::before { opacity: 1; }
+
+    .tab-btn[aria-selected="true"] { background: #173f5f; color: #fff; }
+
+    .map-road { fill: none; stroke: #d3d6db; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+    .map-river { fill: none; stroke: #93cfe6; stroke-width: 12; stroke-linecap: round; }
+    .map-hwy { fill: none; stroke: #6b7076; stroke-width: 20; stroke-linecap: butt; }
+    .map-label { font: 600 13px Manrope, sans-serif; letter-spacing: .06em; fill: #173f5f; }
+    .pin-pulse { transform-origin: center; transform-box: fill-box; animation: pulse 2.2s ease-out infinite; }
+    @keyframes pulse { 0% { transform: scale(.4); opacity: .7; } 100% { transform: scale(2.6); opacity: 0; } }
+
+    .cursor-dot, .cursor-ring { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 100; border-radius: 9999px; transform: translate(-50%, -50%); }
+    .cursor-dot { width: 6px; height: 6px; background: var(--terra); }
+    .cursor-ring { width: 38px; height: 38px; border: 1px solid rgba(200,102,79,.6); transition: width .3s, height .3s, background-color .3s; }
+    .cursor-ring.is-hover { width: 64px; height: 64px; background: rgba(200,102,79,.12); }
+    @media (pointer: coarse) { .cursor-dot, .cursor-ring { display: none; } }
+
+    .scroll-mouse span { animation: wheel 1.8s ease-in-out infinite; }
+    @keyframes wheel { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(10px); opacity: 0; } 100% { opacity: 0; } }
+
+    input, select, textarea { outline: none; }
+    .field { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.16); transition: border-color .3s, background .3s; }
+    .field:focus { border-color: #e39a86; background: rgba(255,255,255,.1); }
+    select.field option { color: #173f5f; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .pin-pulse, .scroll-mouse span { animation: none; }
+    }
+  </style>
+</head>
+
+<body class="is-loading font-sans">
+
+  <!-- ============ PRELOADER ============ -->
+  <div id="loader" class="fixed inset-0 z-[90] flex flex-col items-center justify-center bg-brand hex-pattern">
+    <div class="overflow-hidden">
+      <div id="loader-logo" class="font-serif text-7xl sm:text-8xl leading-none silver-text tracking-tight">SVJ</div>
+    </div>
+    <div class="overflow-hidden mt-1">
+      <div id="loader-sub" class="text-silver tracking-[.35em] text-sm sm:text-base font-light">DEVELOPERS</div>
+    </div>
+    <div class="mt-10 w-48 h-px bg-white/20 relative overflow-hidden">
+      <div id="loader-bar" class="absolute inset-y-0 left-0 w-full bg-white origin-left scale-x-0"></div>
+    </div>
+    <div id="loader-count" class="mt-3 text-white/70 text-xs tracking-widest tabular-nums">0%</div>
+  </div>
+
+  <div class="cursor-dot hidden md:block"></div>
+  <div class="cursor-ring hidden md:block"></div>
+
+  <!-- ============ NAV ============ -->
+  <header id="nav" class="fixed top-0 inset-x-0 z-50 transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
+      <a href="#home" class="flex flex-col leading-none" aria-label="SVJ Developers home">
+        <span class="logo-svj font-serif text-3xl silver-text">SVJ</span>
+        <span class="nav-ink text-[10px] tracking-[.32em] text-white/80 font-light -mt-0.5">DEVELOPERS</span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-8 text-sm nav-ink text-white/90">
+        <a class="link-underline" href="#about">About</a>
+        <a class="link-underline" href="#gallery">Gallery</a>
+        <a class="link-underline" href="#specifications">Specifications</a>
+        <a class="link-underline" href="#floor-plans">Floor Plans</a>
+        <a class="link-underline" href="#cut-section">Cut Section</a>
+        <a class="link-underline" href="#connectivity">Connectivity</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="hidden sm:inline-flex items-center gap-2 rounded-full bg-terra text-white text-sm px-5 py-2.5 hover:bg-navy transition-colors">Enquire Now</a>
+        <button id="menu-btn" class="lg:hidden nav-ink text-white p-2" aria-label="Open menu" aria-expanded="false">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div id="mobile-menu" class="fixed inset-0 z-[60] bg-navy-950/95 backdrop-blur-xl hidden flex-col px-6 pt-24 pb-10">
+    <button id="menu-close" class="absolute top-6 right-5 text-white p-2" aria-label="Close menu">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="flex flex-col gap-5 font-serif text-4xl text-white">
+      <a href="#about">About</a><a href="#gallery">Gallery</a><a href="#specifications">Specifications</a>
+      <a href="#floor-plans">Floor Plans</a><a href="#cut-section">Cut Section</a><a href="#connectivity">Connectivity</a>
+      <a href="#contact" class="text-terra-300">Enquire Now</a>
+    </nav>
+    <a href="tel:+919511868272" class="mt-auto text-white/70 text-sm">Call · +91 95118 68272</a>
+  </div>
+
+  <main>
+    <!-- ============ HERO (Three.js) ============ -->
+    <section id="home" class="relative h-[100svh] min-h-[640px] overflow-hidden grain">
+      <div class="sky sky-night"></div>
+      <div class="sky sky-day"></div>
+      <div class="absolute inset-0 hex-pattern opacity-60"></div>
+      <canvas id="scene" class="absolute inset-0 w-full h-full"></canvas>
+      <img id="hero-fallback" src="assets/img/hero-night.jpg" alt="" class="hidden absolute inset-0 w-full h-full object-cover opacity-70" />
+      <div class="absolute inset-0 bg-gradient-to-r from-navy-950/80 via-navy-950/30 to-transparent pointer-events-none"></div>
+      <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-navy-950/70 to-transparent pointer-events-none"></div>
+
+      <div class="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-8 flex flex-col justify-center pointer-events-none">
+        <p class="hero-fade text-terra-300 tracking-[.35em] text-xs sm:text-sm mb-5">SVJ DEVELOPERS PRESENTS</p>
+        <h1 class="font-serif text-white leading-[.88] text-[17vw] sm:text-[13vw] lg:text-[9.5rem] tracking-tight">
+          <span class="split-line"><span class="hero-split">NEW</span></span>
+          <span class="split-line"><span class="hero-split" data-silver>YASHBINDU</span></span>
+        </h1>
+        <p class="hero-fade mt-6 max-w-md text-white/80 text-base sm:text-lg font-light">
+          Thoughtfully crafted <strong class="font-semibold text-white">2 BHK residences</strong> in the heart of Pimpri-Chinchwad.
+          <span class="block mt-1 font-serif italic text-xl sm:text-2xl text-white">You dream it. We build it.</span>
+        </p>
+        <div class="hero-fade mt-9 flex flex-wrap gap-3 pointer-events-auto">
+          <a href="#floor-plans" class="magnetic rounded-full bg-white text-navy px-7 py-3.5 text-sm font-semibold hover:bg-terra hover:text-white transition-colors">Explore Floor Plans</a>
+          <a href="#about" class="magnetic rounded-full border border-white/40 text-white px-7 py-3.5 text-sm hover:bg-white/10 transition-colors">Discover More</a>
+        </div>
+      </div>
+
+      <!-- day / night toggle -->
+      <div class="hero-fade absolute z-20 right-4 sm:right-8 bottom-24 sm:bottom-10 flex items-center gap-3">
+        <span class="text-white/70 text-xs tracking-widest hidden sm:inline">VIEW</span>
+        <button id="daynight" class="relative flex items-center rounded-full bg-white/10 border border-white/25 backdrop-blur-md p-1 text-xs text-white" aria-label="Toggle day and night view">
+          <span id="dn-knob" class="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(50%-4px)] rounded-full bg-white"></span>
+          <span class="dn-label relative z-10 px-4 py-2 text-navy font-semibold" data-mode="night">Night</span>
+          <span class="dn-label relative z-10 px-4 py-2" data-mode="day">Day</span>
+        </button>
+      </div>
+
+      <a href="#about" class="hero-fade scroll-mouse absolute z-20 left-1/2 -translate-x-1/2 bottom-8 hidden sm:flex flex-col items-center gap-2 text-white/60 text-[10px] tracking-[.3em]">
+        <span class="block w-5 h-8 rounded-full border border-white/40 relative"><span class="absolute left-1/2 -ml-[2px] top-1.5 w-1 h-1.5 rounded-full bg-white"></span></span>
+        SCROLL
+      </a>
+    </section>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="bg-navy text-white py-5 overflow-hidden border-y border-white/5">
+      <div id="marquee" class="flex whitespace-nowrap font-serif text-2xl sm:text-3xl gap-10 w-max">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- ============ ABOUT ============ -->
+    <section id="about" class="relative py-24 sm:py-36">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 grid lg:grid-cols-12 gap-14 lg:gap-10 items-center">
+        <div class="lg:col-span-6">
+          <p class="reveal text-terra tracking-[.3em] text-xs mb-4">01 — ABOUT US</p>
+          <h2 class="split-heading font-serif text-5xl sm:text-6xl lg:text-7xl leading-[.95]">A home where you truly belong</h2>
+          <div class="heading-rule h-px w-40 bg-navy mt-8 mb-8"></div>
+          <p class="reveal text-navy/80 text-lg leading-relaxed">
+            Yashbindu is an exclusive residential development by SVJ, crafted for those who seek a perfect balance of comfort,
+            elegance, and thoughtful living. Designed with a vision to elevate everyday life, Yashbindu brings together modern
+            architecture, high-quality construction, and a peaceful community environment.
+          </p>
+          <p class="reveal text-navy/70 leading-relaxed mt-5">
+            Situated in a prime location with excellent connectivity, Yashbindu keeps you close to schools, hospitals, markets,
+            and essential urban conveniences, while still offering a calm retreat away from the city rush. With secure surroundings
+            and a vibrant community space, Yashbindu is more than a home.
+          </p>
+          <p class="reveal font-serif italic text-2xl mt-8 text-brand-700">Yashbindu by SVJ — You dream it. We build it.</p>
+        </div>
+        <div class="lg:col-span-6 relative">
+          <div class="img-reveal relative rounded-[2rem] overflow-hidden aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5] shadow-2xl shadow-navy/20">
+            <img src="assets/img/day-front.jpg" alt="New Yashbindu building facade in daylight" class="parallax-img absolute inset-0 w-full h-[120%] object-cover object-[45%_center]" loading="lazy" />
+          </div>
+          <div class="reveal absolute -bottom-8 -left-2 sm:-left-8 bg-white rounded-2xl shadow-xl shadow-navy/10 p-5 sm:p-6 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-terra/10 grid place-items-center text-terra">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </div>
+            <div>
+              <div class="text-xs tracking-widest text-navy/50">LOCATION</div>
+              <div class="font-semibold">Bijli Nagar Rd, Pimpri-Chinchwad</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- stats -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 mt-28 grid grid-cols-2 lg:grid-cols-4 gap-px bg-navy/10 rounded-3xl overflow-hidden">
+        <div class="bg-white p-7 sm:p-10"><div class="font-serif text-5xl sm:text-6xl"><span class="counter" data-to="2">0</span> BHK</div><div class="text-navy/60 text-sm mt-2">Type 1 &amp; Type 2 layouts</div></div>
+        <div class="bg-white p-7 sm:p-10"><div class="font-serif text-5xl sm:text-6xl"><span class="counter" data-to="230">0</span> m</div><div class="text-navy/60 text-sm mt-2">to Happy Kids pre-school</div></div>
+        <div class="bg-white p-7 sm:p-10"><div class="font-serif text-5xl sm:text-6xl"><span class="counter" data-to="1.8" data-dec="1">0</span> km</div><div class="text-navy/60 text-sm mt-2">to Akurdi Metro Station</div></div>
+        <div class="bg-white p-7 sm:p-10"><div class="font-serif text-5xl sm:text-6xl"><span class="counter" data-to="8">0</span> km</div><div class="text-navy/60 text-sm mt-2">to Hinjawadi IT Park</div></div>
+      </div>
+    </section>
+
+    <!-- ============ GALLERY (horizontal on desktop) ============ -->
+    <section id="gallery" class="relative bg-navy-950 text-white overflow-hidden">
+      <div id="gallery-pin" class="lg:h-screen flex flex-col justify-center py-24 lg:py-0">
+        <div class="max-w-7xl w-full mx-auto px-4 sm:px-8 mb-10 lg:mb-12 flex items-end justify-between gap-6">
+          <div>
+            <p class="reveal text-terra-300 tracking-[.3em] text-xs mb-4">GALLERY</p>
+            <h2 class="split-heading font-serif text-5xl sm:text-6xl">Life at Yashbindu</h2>
+          </div>
+          <p class="reveal hidden lg:block text-white/50 text-sm max-w-xs">Scroll to walk through the residence — from dusk-lit facades to finished interiors.</p>
+        </div>
+        <div id="gallery-track" class="flex flex-col lg:flex-row gap-6 px-4 sm:px-8 lg:pl-[max(2rem,calc((100vw-80rem)/2+2rem))] lg:w-max">
+          <figure class="gallery-card relative shrink-0 rounded-3xl overflow-hidden lg:w-[52vw] h-[60vw] lg:h-[62vh]">
+            <img src="assets/img/hero-night.jpg" alt="New Yashbindu at dusk with lit windows" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+            <figcaption class="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black/70 to-transparent"><div class="text-xs tracking-widest text-white/60">01</div><div class="font-serif text-3xl">Evenings, elevated</div></figcaption>
+          </figure>
+          <figure class="gallery-card relative shrink-0 rounded-3xl overflow-hidden lg:w-[46vw] h-[60vw] lg:h-[62vh]">
+            <img src="assets/img/day-front.jpg" alt="Front elevation in daylight" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+            <figcaption class="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black/70 to-transparent"><div class="text-xs tracking-widest text-white/60">02</div><div class="font-serif text-3xl">Modern architecture</div></figcaption>
+          </figure>
+          <figure class="gallery-card relative shrink-0 rounded-3xl overflow-hidden lg:w-[58vw] h-[50vw] lg:h-[62vh]">
+            <img src="assets/img/aerial.jpg" alt="Aerial top view of the plot and road junction" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+            <figcaption class="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black/70 to-transparent"><div class="text-xs tracking-widest text-white/60">03</div><div class="font-serif text-3xl">A prime corner plot</div></figcaption>
+          </figure>
+          <figure class="gallery-card relative shrink-0 rounded-3xl overflow-hidden lg:w-[58vw] h-[50vw] lg:h-[62vh]">
+            <img src="assets/img/kitchen.jpg" alt="Modular kitchen interior" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+            <figcaption class="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black/70 to-transparent"><div class="text-xs tracking-widest text-white/60">04</div><div class="font-serif text-3xl">Interiors that work for you</div></figcaption>
+          </figure>
+          <div class="hidden lg:flex shrink-0 w-[30vw] h-[62vh] items-center justify-center">
+            <a href="#specifications" class="group text-center">
+              <div class="w-28 h-28 mx-auto rounded-full border border-white/30 grid place-items-center group-hover:bg-terra group-hover:border-terra transition-colors">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </div>
+              <div class="mt-5 font-serif text-2xl">See specifications</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SPECIFICATIONS ============ -->
+    <section id="specifications" class="relative py-24 sm:py-36 bg-gradient-to-b from-white to-brand-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8">
+        <div class="text-center max-w-2xl mx-auto">
+          <p class="reveal text-terra tracking-[.3em] text-xs mb-4">02 — SPECIFICATIONS</p>
+          <h2 class="split-heading font-serif text-5xl sm:text-6xl lg:text-7xl leading-[.95]">Built right, down to the last detail</h2>
+          <div class="heading-rule h-px w-40 bg-navy mx-auto mt-8 origin-center"></div>
+        </div>
+        <div id="spec-grid" class="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-5" style="perspective: 1200px;">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FLOOR PLANS ============ -->
+    <section id="floor-plans" class="relative py-24 sm:py-36 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+          <div>
+            <p class="reveal text-terra tracking-[.3em] text-xs mb-4">03 — FLOOR PLAN</p>
+            <h2 class="split-heading font-serif text-5xl sm:text-6xl lg:text-7xl leading-[.95]">Spaces, measured<br class="hidden sm:block" /> for living</h2>
+          </div>
+          <div class="reveal inline-flex p-1 rounded-full bg-brand-50 border border-navy/10 self-start lg:self-auto" role="tablist">
+            <button class="tab-btn rounded-full px-5 sm:px-6 py-3 text-sm font-medium transition-colors" role="tab" aria-selected="true" data-plan="0">4th &amp; 5th Floor</button>
+            <button class="tab-btn rounded-full px-5 sm:px-6 py-3 text-sm font-medium transition-colors" role="tab" aria-selected="false" data-plan="1">6th &amp; 7th Floor</button>
+          </div>
+        </div>
+
+        <div class="mt-14 grid lg:grid-cols-12 gap-10 items-start">
+          <div class="lg:col-span-8 reveal">
+            <button class="plan-stage relative w-full rounded-3xl bg-brand-50/60 border border-navy/10 p-4 sm:p-8 aspect-[4/3] overflow-hidden group" data-zoom aria-label="Open floor plan in full screen">
+              <img id="plan-img" src="assets/img/plan-4-5.jpg" alt="4th and 5th floor plan" class="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-[1.03]" />
+              <span class="absolute top-4 right-4 rounded-full bg-white/90 shadow px-3 py-1.5 text-xs flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg> Click to zoom
+              </span>
+            </button>
+          </div>
+          <div class="lg:col-span-4">
+            <div class="reveal text-xs tracking-widest text-navy/50 mb-3" id="plan-caption">4TH &amp; 5TH FLOOR · ROOM SIZES (M)</div>
+            <ul id="plan-rooms" class="divide-y divide-navy/10 border-y border-navy/10"></ul>
+            <p class="reveal text-xs text-navy/50 mt-5 leading-relaxed">All dimensions are in metres as per the architectural plan. Furniture shown is indicative only.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CUT SECTION ============ -->
+    <section id="cut-section" class="relative py-24 sm:py-36 bg-brand text-white overflow-hidden hex-pattern">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8">
+        <div class="text-center">
+          <p class="reveal text-white/70 tracking-[.3em] text-xs mb-4">04 — CUT SECTION</p>
+          <h2 class="split-heading font-serif text-5xl sm:text-6xl lg:text-7xl">Two ways to live in 2 BHK</h2>
+        </div>
+        <div class="mt-16 grid md:grid-cols-2 gap-8">
+          <article class="tilt-card reveal relative rounded-[2rem] bg-white text-navy p-6 sm:p-10" style="transform-style: preserve-3d;">
+            <div class="flex items-baseline justify-between">
+              <h3 class="font-semibold text-2xl">2 BHK</h3>
+              <span class="font-serif text-4xl text-brand">Type 1</span>
+            </div>
+            <img src="assets/img/cut-type1.jpg" alt="2 BHK Type 1 isometric cut section" class="tilt-img mt-6 w-full" style="transform: translateZ(40px);" loading="lazy" />
+            <p class="text-sm text-navy/60 mt-4">Living room with open balcony, kitchen with dining, two bedrooms with two toilets and a dry balcony.</p>
+          </article>
+          <article class="tilt-card reveal relative rounded-[2rem] bg-white text-navy p-6 sm:p-10 md:mt-20" style="transform-style: preserve-3d;">
+            <div class="flex items-baseline justify-between">
+              <h3 class="font-semibold text-2xl">2 BHK</h3>
+              <span class="font-serif text-4xl text-terra">Type 2</span>
+            </div>
+            <img src="assets/img/cut-type2.jpg" alt="2 BHK Type 2 isometric cut section" class="tilt-img mt-6 w-full" style="transform: translateZ(40px);" loading="lazy" />
+            <p class="text-sm text-navy/60 mt-4">Master bedroom with attached toilet, a second bedroom, and a larger kitchen and dining area that opens to the living room.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONNECTIVITY ============ -->
+    <section id="connectivity" class="relative py-24 sm:py-36 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8">
+        <div class="text-center max-w-2xl mx-auto">
+          <p class="reveal text-terra tracking-[.3em] text-xs mb-4">05 — CONNECTIVITY</p>
+          <h2 class="split-heading font-serif text-5xl sm:text-6xl lg:text-7xl leading-[.95]">Everything, just around the corner</h2>
+          <div class="heading-rule h-px w-40 bg-navy mx-auto mt-8 origin-center"></div>
+        </div>
+
+        <div class="reveal mt-16 rounded-[2rem] bg-[#f1f2f3] border border-navy/10 overflow-hidden">
+          <svg id="map" viewBox="0 0 1160 720" class="w-full h-auto block" role="img" aria-label="Location map of New Yashbindu with nearby landmarks">
+            <path class="map-river" d="M0 600 L240 720" />
+            <path class="map-river" d="M300 720 C420 650 520 600 545 640 L555 720" />
+            <path class="map-river" d="M870 720 C860 640 905 600 945 630 C985 660 1020 700 1060 720" />
+            <path class="map-road" d="M130 0 L260 105 L395 160 L470 250 L520 330 L625 480 L660 580" />
+            <path class="map-road" d="M345 0 L330 100 L280 220 L255 460" />
+            <path class="map-road" d="M470 235 L625 230 L705 250" />
+            <path class="map-road" d="M765 0 L705 250 L670 440 L655 560 L690 600 L690 720" />
+            <path class="map-road" d="M0 330 L105 410 L275 475 L360 515 L540 530 L660 575" />
+            <path class="map-road" d="M660 575 L815 450 L900 355 L1045 305" />
+            <path class="map-hwy" d="M810 0 L1160 445" />
+            <g class="map-labels">
+              <text class="map-label" x="390" y="100">TALERA HOSPITAL</text>
+              <text class="map-label" x="620" y="140">DALVI NAGAR</text>
+              <text class="map-label" x="590" y="198">INDIRA NAGAR</text>
+              <text class="map-label" x="835" y="255">CHINCHWAD</text><text class="map-label" x="845" y="273">JUNCTION</text>
+              <text class="map-label" x="400" y="305">HANUMAN</text><text class="map-label" x="408" y="323">TEMPLE</text>
+              <text class="map-label" x="590" y="347">SKF INDIA</text>
+              <text class="map-label" x="570" y="650">MORYA GOSAVI</text><text class="map-label" x="600" y="668">MANDIR</text>
+              <text class="map-label" x="420" y="693">BIJALI NAGAR</text>
+              <text class="map-label" x="885" y="62">OLD MUMBAI - PUNE</text><text class="map-label" x="935" y="80">HIGHWAY</text>
+              <text class="map-label" transform="translate(268 400) rotate(-82)">AKURDI CHIKALI RD</text>
+              <text class="map-label" transform="translate(728 522) rotate(-38)">CHIKALI RD</text>
+            </g>
+            <g id="map-pin" transform="translate(510 188)">
+              <circle class="pin-pulse" r="18" fill="#c8664f" opacity=".5" />
+              <rect x="-140" y="-22" width="118" height="42" rx="8" fill="#173f5f" />
+              <text x="-130" y="-4" fill="#fff" font-family="Cormorant Garamond, serif" font-size="15" letter-spacing="1">NEW</text>
+              <text x="-130" y="12" fill="#fff" font-family="Cormorant Garamond, serif" font-size="15" letter-spacing="1">YASHBINDU</text>
+              <path d="M0 14 C-14 -2 -14 -10 -14 -14 A14 14 0 1 1 14 -14 C14 -10 14 -2 0 14Z" fill="#173f5f" />
+              <circle cy="-14" r="5" fill="#fff" />
+            </g>
+          </svg>
+        </div>
+
+        <div id="conn-grid" class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section id="contact" class="relative py-24 sm:py-36 bg-navy text-white overflow-hidden">
+      <div class="absolute inset-0 hex-pattern opacity-70"></div>
+      <div class="absolute -right-40 -top-40 w-[36rem] h-[36rem] rounded-full bg-brand/30 blur-3xl"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-8 grid lg:grid-cols-2 gap-16">
+        <div>
+          <p class="reveal text-terra-300 tracking-[.3em] text-xs mb-4">GET IN TOUCH</p>
+          <h2 class="split-heading font-serif text-5xl sm:text-6xl lg:text-7xl leading-[.95]">Your new address is waiting</h2>
+          <div class="mt-12 space-y-8">
+            <div class="reveal">
+              <div class="text-xs tracking-widest text-white/50">SITE ADDRESS</div>
+              <div class="mt-2 text-lg"><strong class="font-semibold">New Yashbindu</strong><br />Yashbindu Apartment, Raghumauli Garden Road, Bijli Nagar Rd, Pimpri-Chinchwad, 411033</div>
+            </div>
+            <div class="reveal">
+              <div class="text-xs tracking-widest text-white/50">CONTACT PERSON</div>
+              <div class="mt-2 text-lg">Mangesh Bhosale · <a class="link-underline text-terra-300" href="tel:+919511868272">+91 95118 68272</a></div>
+            </div>
+            <div class="reveal">
+              <div class="text-xs tracking-widest text-white/50">CORPORATE OFFICE</div>
+              <div class="mt-2 text-lg"><strong class="font-semibold">SVJ Developers</strong><br />Hall no 401, S.No. 207/1/1, Sonigara Landmark, Chatrapati Chowk, Kaspate Wasti, Wakad, Pune - 411057</div>
+              <div class="mt-1 text-white/70">Tel: <a class="link-underline" href="tel:+912027276700">020-27276700</a></div>
+            </div>
+          </div>
+        </div>
+
+        <form id="enquiry" class="reveal self-start rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur p-6 sm:p-10">
+          <h3 class="font-serif text-3xl">Schedule a site visit</h3>
+          <p class="text-white/60 text-sm mt-2">Fill in your details and send them straight to our team on WhatsApp.</p>
+          <div class="mt-8 grid sm:grid-cols-2 gap-4">
+            <label class="block sm:col-span-2"><span class="text-xs tracking-widest text-white/50">FULL NAME</span>
+              <input required name="name" type="text" autocomplete="name" class="field mt-2 w-full rounded-xl px-4 py-3.5 text-white placeholder-white/30" placeholder="Your name" /></label>
+            <label class="block"><span class="text-xs tracking-widest text-white/50">PHONE</span>
+              <input required name="phone" type="tel" autocomplete="tel" class="field mt-2 w-full rounded-xl px-4 py-3.5 text-white placeholder-white/30" placeholder="+91" /></label>
+            <label class="block"><span class="text-xs tracking-widest text-white/50">INTERESTED IN</span>
+              <select name="type" class="field mt-2 w-full rounded-xl px-4 py-3.5 text-white">
+                <option>2 BHK · Type 1</option><option>2 BHK · Type 2</option><option>Not sure yet</option>
+              </select></label>
+            <label class="block sm:col-span-2"><span class="text-xs tracking-widest text-white/50">MESSAGE</span>
+              <textarea name="message" rows="3" class="field mt-2 w-full rounded-xl px-4 py-3.5 text-white placeholder-white/30" placeholder="Preferred visit date, questions…"></textarea></label>
+          </div>
+          <button type="submit" class="magnetic mt-6 w-full rounded-full bg-terra hover:bg-white hover:text-navy transition-colors py-4 font-semibold flex items-center justify-center gap-2">
+            Send on WhatsApp
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-navy-950 text-white/60 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col md:flex-row gap-6 items-center justify-between text-sm">
+      <div class="flex flex-col items-center md:items-start leading-none">
+        <span class="font-serif text-4xl silver-text">SVJ</span>
+        <span class="text-[10px] tracking-[.32em] font-light text-silver">DEVELOPERS</span>
+      </div>
+      <div class="text-center md:text-right">
+        <div>GST No. 27/ABAPD7474J1ZJ</div>
+        <div class="mt-1">© <span id="year"></span> SVJ Developers. Images are artist's impressions.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- lightbox -->
+  <div id="lightbox" class="fixed inset-0 z-[80] hidden items-center justify-center bg-navy-950/90 backdrop-blur p-4" role="dialog" aria-modal="true" aria-label="Floor plan preview">
+    <button id="lb-close" class="absolute top-5 right-5 text-white p-2" aria-label="Close preview">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <img id="lb-img" src="" alt="" class="max-h-[90vh] max-w-full rounded-2xl bg-white p-3" />
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+  /* =========================================================
+     DATA (from the New Yashbindu brochure)
+     ========================================================= */
+  const ICONS = {
+    structure: '<path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/>',
+    walls: '<rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 9.3h18M3 14.6h18M9 4v5.3M15 4v5.3M6 9.3v5.3M12 9.3v5.3M18 9.3v5.3M9 14.6V20M15 14.6V20"/>',
+    door: '<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M12 3v18M8 9v6M16 9v6M2 21h20"/>',
+    floor: '<path d="M12 3l9 4.5-9 4.5-9-4.5z"/><path d="M3 12l9 4.5 9-4.5M3 16.5L12 21l9-4.5M7.5 5.2l9 4.6M16.5 5.2l-9 4.6"/>',
+    water: '<path d="M12 2.5s5 5.6 5 9a5 5 0 01-10 0c0-3.4 5-9 5-9z"/><path d="M3 17l9 4.5 9-4.5"/>',
+    paint: '<path d="M18 3l3 3-8 8-3-3z"/><path d="M10 11l-3 3a3 3 0 00-1 2.5L4 20l3.5-2a3 3 0 002.5-1l3-3"/>',
+    kitchen: '<rect x="3" y="11" width="18" height="10" rx="1"/><path d="M3 15h18M8 15v6M16 15v6M7 3h10l1 5H6z"/>',
+    toilet: '<path d="M5 3h5v8H5zM4 11h16a6 6 0 01-6 6h-4a6 6 0 01-6-6zM9 17l-1 4h8l-1-4"/>',
+    plumbing: '<path d="M4 4h6v4h4a4 4 0 014 4v4h2v4h-6v-4h0v-3a1 1 0 00-1-1h-3v3H4z"/>',
+    security: '<path d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5z"/><rect x="9" y="11" width="6" height="5" rx="1"/><path d="M10 11V9.5a2 2 0 014 0V11"/>',
+    bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+    train: '<rect x="5" y="3" width="14" height="13" rx="3"/><path d="M5 10h14M8 19l-2 2M16 19l2 2M9 13h.01M15 13h.01"/>',
+    school: '<path d="M2 6c4-2 7-2 10 0 3-2 6-2 10 0v13c-4-2-7-2-10 0-3-2-6-2-10 0z"/><path d="M12 6v13"/>',
+    hospital: '<path d="M3 10l9-7 9 7v11H3z"/><path d="M12 10v7M8.5 13.5h7"/>',
+    park: '<path d="M8 21v-6M8 15a5 5 0 115-5c0 2.8-2.2 5-5 5z"/><path d="M13 17h8M14 17v4M20 17v4M3 21h18"/>',
+    highway: '<path d="M8 3L4 21M16 3l4 18M12 4v3M12 10v3M12 16v3"/>',
+    temple: '<path d="M12 2v3M8 9a4 4 0 018 0zM5 9h14v3H5zM6 12v9h12v-9M10 21v-5h4v5"/>',
+    tech: '<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4M8 10l-2 1.5L8 13M16 10l2 1.5-2 1.5"/>',
+    mall: '<path d="M3 9l1.5-5h15L21 9M3 9h18v12H3zM9 21v-6h6v6M3 9a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0"/>',
+  };
+
+  const SPECS = [
+    { t: 'R.C.C Structure', i: 'structure', l: ['Earthquake resistant RCC framed structure as per IS codes'] },
+    { t: 'Walls', i: 'walls', l: ['External & internal walls with AAC block', 'Gypsum wall finish interior', 'Sand face plaster exterior', 'OBD paint for interior', 'Apex paint for exterior with texture finish'] },
+    { t: 'Doors & Windows', i: 'door', l: ['Both side laminated door in living and bedroom', 'Flush door / FRP door for toilets', 'Sliding glass door for terrace', 'Aluminium powder-coated windows with mosquito net', 'Aluminium openable ventilator for toilets'] },
+    { t: 'Flooring & Tiling', i: 'floor', l: ['Vitrified tiles in living, dining, kitchen & bedrooms', 'Anti-skid designer tiles in toilets and terrace'] },
+    { t: 'Waterproofing', i: 'water', l: ['Crystalline chemical waterproofing up to 2.5 m height'] },
+    { t: 'Painting', i: 'paint', l: ['Internal walls: O.B.D. 2 coat putty + 1 coat primer + 2 coat paint (Nerolac, Berger)', 'External walls: 1 coat primer + 2 coat paint (Apex — Nerolac, Berger, Nippon)'] },
+    { t: 'Kitchen & Utility', i: 'kitchen', l: ['Granite kitchen platform with SS sink', 'Glazed dado tiles', 'Provision for MNGL gas pipeline', 'Provision for water purifier'] },
+    { t: 'Toilets', i: 'toilet', l: ['Jaguar or equivalent sanitary fittings', 'Provision of hot and cold diverter unit'] },
+    { t: 'Plumbing', i: 'plumbing', l: ['Concealed CPVC & UPVC piping', 'Internal CP and sanitary ware — Jaguar / Hindware / Parryware', 'Provision for geyser', 'Solar hot water in master bath', 'Hot and cold water mixer'] },
+    { t: 'Automation & Security', i: 'security', l: ['Mechanical car parking', 'Hikvision video door phone', 'Hikvision security cameras', 'Electrical charging point for EV cars'] },
+    { t: 'Electrical', i: 'bolt', l: ['Concealed copper wiring with circuit breaker', 'Modular switches — L&T or C&S', 'Provision for AC points in bedroom and living room'] },
+  ];
+
+  const CONNECT = [
+    { t: 'Public Transport', i: 'train', l: [['Akurdi Metro Station', '1.8 km'], ['Akurdi Railway Station', '1.7 km'], ['Chinchwad Railway Station', '1.9 km']] },
+    { t: 'Schools', i: 'school', l: [['Happy Kids Pre School', '230 m'], ['Good Shepherd English Medium', '700 m'], ['New English High School', '800 m'], ['Rasiklal M. Dhariwal Intl. School', '2 km']] },
+    { t: 'Hospitals', i: 'hospital', l: [['Parshwa Multispeciality Hospital', '800 m'], ['PCMC Talera Hospital OPD', '2.2 km']] },
+    { t: 'Parks', i: 'park', l: [['Rajarshi Shahu Udyan', '550 m'], ['Thergaon Boat Club', '3 km']] },
+    { t: 'Highway', i: 'highway', l: [['Old Mumbai–Pune Highway', '1.8 km']] },
+    { t: 'Temple', i: 'temple', l: [['Shree Moraya Gosavi Mandir', '2.2 km']] },
+    { t: 'Tech', i: 'tech', l: [['SKF India Ltd', '1.6 km'], ['Hinjawadi IT Park', '8 km']] },
+    { t: 'Malls', i: 'mall', l: [['INOX Jai Ganesh Vision Mall', '1.5 km'], ['Elpro City Square', '2 km'], ['City One Mall', '3.5 km']] },
+  ];
+
+  const PLANS = [
+    { img: 'assets/img/plan-4-5.jpg', alt: '4th and 5th floor plan', cap: '4TH & 5TH FLOOR · ROOM SIZES (M)',
+      rooms: [['Living', '3.58 × 4.26'], ['Kitchen / Dining', '3.01 × 2.95'], ['Bedroom 1', '3.59 × 2.83'], ['Bedroom 2', '2.90 × 3.01'], ['Toilet 1', '2.15 × 1.22'], ['Toilet 2', '2.01 × 1.37'], ['Open Balcony (living)', '3.73 × 1.63'], ['Open Balcony (bed)', '2.90 × 1.00'], ['Dry Balcony', '2.20 × 1.29'], ['Lift', '1.90 × 2.45'], ['Passage', '1.50 wide']] },
+    { img: 'assets/img/plan-6-7.jpg', alt: '6th and 7th floor plan', cap: '6TH & 7TH FLOOR · ROOM SIZES (M)',
+      rooms: [['Living (×2)', '3.58 × 4.26'], ['Master Bedroom', '3.76 × 3.05'], ['Bedroom', '3.05 × 3.20'], ['Bedroom', '3.59 × 2.83'], ['Bedroom', '2.90 × 3.185'], ['Kitchen / Dining', '3.12 × 3.81'], ['Kitchen / Dining', '3.01 × 2.95'], ['Open Balcony', '3.73 × 1.63'], ['Open Balcony', '3.58 × 1.63'], ['Dry Balcony', '1.78 × 1.68'], ['Toilets', '2.16 × 1.24 · 1.38 × 1.98'], ['Passage', '1.50 / 1.20 wide']] },
+  ];
+
+  const svg = (name, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
+
+  /* ---------- render data-driven blocks ---------- */
+  document.getElementById('spec-grid').innerHTML = SPECS.map((s, n) => `
+    <article class="spec-card relative rounded-3xl bg-white border border-navy/10 p-7 sm:p-8 hover:shadow-2xl hover:shadow-navy/10 transition-shadow ${n === SPECS.length - 1 ? 'lg:col-span-1' : ''}">
+      <div class="flex items-center justify-between">
+        <div class="w-14 h-14 rounded-2xl bg-navy text-white grid place-items-center">${svg(s.i, 'w-7 h-7')}</div>
+        <span class="font-serif text-4xl text-navy/10">${String(n + 1).padStart(2, '0')}</span>
+      </div>
+      <h3 class="mt-6 font-semibold text-xl tracking-tight">${s.t}</h3>
+      <ul class="mt-4 space-y-2.5 text-[15px] text-navy/70">
+        ${s.l.map(x => `<li class="flex gap-3"><span class="mt-2 w-1.5 h-1.5 rounded-full bg-terra shrink-0"></span><span>${x}</span></li>`).join('')}
+      </ul>
+    </article>`).join('') + `
+    <article class="spec-card relative rounded-3xl overflow-hidden min-h-[280px] sm:col-span-2 lg:col-span-1">
+      <img src="assets/img/kitchen.jpg" alt="Modular kitchen render" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+      <div class="absolute inset-0 bg-gradient-to-t from-navy-950/80 to-transparent"></div>
+      <div class="absolute bottom-0 p-7 text-white"><div class="text-xs tracking-widest text-white/60">CRAFTED INTERIORS</div><div class="font-serif text-3xl mt-1">Quality you can feel</div></div>
+    </article>`;
+
+  document.getElementById('conn-grid').innerHTML = CONNECT.map(c => `
+    <article class="conn-card rounded-3xl border border-navy/10 bg-white p-6 hover:-translate-y-1 hover:shadow-xl hover:shadow-navy/10 transition-all duration-500">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-brand-50 text-navy grid place-items-center">${svg(c.i, 'w-6 h-6')}</div>
+        <h3 class="font-semibold tracking-wide">${c.t}</h3>
+      </div>
+      <ul class="mt-5 space-y-3 text-sm">
+        ${c.l.map(([n, d]) => `<li class="flex items-baseline gap-2"><span class="text-navy/70">${n}</span><span class="flex-1 border-b border-dotted border-navy/20"></span><span class="font-semibold whitespace-nowrap">${d}</span></li>`).join('')}
+      </ul>
+    </article>`).join('');
+
+  const marqueeWords = ['2 BHK Residences', 'Earthquake Resistant RCC', 'EV Charging Points', 'Hikvision Security', 'Mechanical Car Parking', 'Solar Hot Water', 'Prime Pimpri-Chinchwad Location'];
+  const mq = marqueeWords.map(w => `<span class="flex items-center gap-10">${w}<span class="text-terra-300 text-lg">✦</span></span>`).join('');
+  document.getElementById('marquee').innerHTML = mq + mq;
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---------- floor plan tabs ---------- */
+  const planImg = document.getElementById('plan-img');
+  const planRooms = document.getElementById('plan-rooms');
+  const planCap = document.getElementById('plan-caption');
+  function renderRooms(p) {
+    planRooms.innerHTML = p.rooms.map(([n, d]) => `<li class="room-row flex items-center justify-between py-3.5 text-[15px]"><span class="text-navy/70">${n}</span><span class="font-semibold tabular-nums">${d}</span></li>`).join('');
+    planCap.textContent = p.cap;
+  }
+  renderRooms(PLANS[0]);
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => {
+    if (btn.getAttribute('aria-selected') === 'true') return;
+    document.querySelectorAll('.tab-btn').forEach(b => b.setAttribute('aria-selected', b === btn));
+    const p = PLANS[+btn.dataset.plan];
+    gsap.timeline()
+      .to(planImg, { autoAlpha: 0, scale: .96, duration: .3, ease: 'power2.in' })
+      .add(() => { planImg.src = p.img; planImg.alt = p.alt; renderRooms(p); })
+      .to(planImg, { autoAlpha: 1, scale: 1, duration: .6, ease: 'power3.out' })
+      .from('.room-row', { x: 20, autoAlpha: 0, stagger: .04, duration: .4, ease: 'power2.out' }, '<');
+  }));
+
+  /* ---------- lightbox ---------- */
+  const lb = document.getElementById('lightbox'), lbImg = document.getElementById('lb-img');
+  document.querySelector('[data-zoom]').addEventListener('click', () => {
+    lbImg.src = planImg.src; lbImg.alt = planImg.alt;
+    lb.classList.remove('hidden'); lb.classList.add('flex');
+    gsap.fromTo(lbImg, { scale: .9, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: .5, ease: 'power3.out' });
+  });
+  const closeLb = () => gsap.to(lbImg, { scale: .95, autoAlpha: 0, duration: .25, onComplete: () => { lb.classList.add('hidden'); lb.classList.remove('flex'); } });
+  lb.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !lb.classList.contains('hidden')) closeLb(); });
+
+  /* ---------- mobile menu ---------- */
+  const mm = document.getElementById('mobile-menu'), menuBtn = document.getElementById('menu-btn');
+  const toggleMenu = open => {
+    mm.classList.toggle('hidden', !open); mm.classList.toggle('flex', open);
+    menuBtn.setAttribute('aria-expanded', open);
+    if (open) gsap.from('#mobile-menu nav a', { y: 40, autoAlpha: 0, stagger: .06, duration: .5, ease: 'power3.out' });
+  };
+  menuBtn.addEventListener('click', () => toggleMenu(true));
+  document.getElementById('menu-close').addEventListener('click', () => toggleMenu(false));
+  mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggleMenu(false)));
+
+  /* ---------- enquiry → WhatsApp ---------- */
+  document.getElementById('enquiry').addEventListener('submit', e => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const text = `Hello, I'm interested in New Yashbindu.\nName: ${f.get('name')}\nPhone: ${f.get('phone')}\nInterested in: ${f.get('type')}\n${f.get('message') || ''}`;
+    window.open('https://wa.me/919511868272?text=' + encodeURIComponent(text), '_blank', 'noopener');
+  });
+  </script>
+
+  <!-- =========================================================
+       THREE.JS — procedural New Yashbindu tower
+       ========================================================= -->
+  <script>
+  const Scene3D = (() => {
+    const canvas = document.getElementById('scene');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    } catch (e) {
+      canvas.remove(); document.getElementById('hero-fallback').classList.remove('hidden');
+      return { ready: Promise.resolve(), intro() {}, setMode() {}, state: {} };
+    }
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x0b1f30, 26, 60);
+    const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 200);
+
+    /* lights */
+    const hemi = new THREE.HemisphereLight(0x9cc4e4, 0x0b1f30, 0.55); scene.add(hemi);
+    const sun = new THREE.DirectionalLight(0xb7d3f0, 0.6);
+    sun.position.set(-10, 16, 12); sun.castShadow = true;
+    sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -12, right: 12, top: 14, bottom: -6, near: 1, far: 50 });
+    sun.shadow.bias = -0.0008;
+    scene.add(sun);
+    const warm = new THREE.PointLight(0xffb27a, 1.2, 14, 2); warm.position.set(0, 0.8, 3.4); scene.add(warm);
+
+    /* materials */
+    const M = {
+      white: new THREE.MeshStandardMaterial({ color: 0xf1f3f5, roughness: .75 }),
+      grey: new THREE.MeshStandardMaterial({ color: 0x8e959c, roughness: .8 }),
+      dark: new THREE.MeshStandardMaterial({ color: 0x4f565e, roughness: .7 }),
+      terra: new THREE.MeshStandardMaterial({ color: 0xc8664f, roughness: .7 }),
+      glassRail: new THREE.MeshStandardMaterial({ color: 0x9fc8e6, roughness: .1, metalness: .2, transparent: true, opacity: .35 }),
+      winDark: new THREE.MeshStandardMaterial({ color: 0x1c2733, roughness: .2, metalness: .6 }),
+      ground: new THREE.MeshStandardMaterial({ color: 0x1a2531, roughness: 1 }),
+      road: new THREE.MeshStandardMaterial({ color: 0x141b23, roughness: .9 }),
+      stripe: new THREE.MeshStandardMaterial({ color: 0xe6e8ea, roughness: .6 }),
+    };
+    const FLOORS = 8, FH = 1, BASE = 1.15, W = 5.2, D = 4.2;
+    const winMats = Array.from({ length: FLOORS }, () => new THREE.MeshStandardMaterial({ color: 0x1a1208, emissive: 0xff9f4d, emissiveIntensity: 0, roughness: .4 }));
+
+    const tower = new THREE.Group(); scene.add(tower);
+    const box = (w, h, d, mat, x, y, z, cast = true) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+      m.position.set(x, y, z); m.castShadow = cast; m.receiveShadow = true; tower.add(m); return m;
+    };
+    const plane = (w, h, mat, x, y, z, ry = 0) => {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+      m.position.set(x, y, z); m.rotation.y = ry; tower.add(m); return m;
+    };
+
+    const H = FLOORS * FH;
+    const top = BASE + H;
+    // stilt parking: slab + columns
+    box(W + .3, .25, D + .3, M.white, 0, BASE, 0);
+    [[-2.3, -1.8], [2.3, -1.8], [-2.3, 1.8], [2.3, 1.8], [0, 1.8], [0, -1.8], [-1.1, 1.8], [1.1, 1.8]]
+      .forEach(([x, z]) => box(.28, BASE, .28, M.white, x, BASE / 2, z));
+    box(1.4, BASE - .1, 1.2, M.grey, -1.6, BASE / 2, -1, true); // lift / stair core at ground
+    // main body
+    box(W, H, D, M.white, 0, BASE + H / 2, 0);
+    // stair / lift core on the right side, taller, dark
+    box(1.6, H + .9, 2.2, M.dark, W / 2 + .5, BASE + (H + .9) / 2, -0.6);
+    // grey pilasters on the front face
+    box(.9, H + .3, .3, M.grey, -1.15, BASE + (H + .3) / 2, D / 2 + .12);
+    box(.9, H + .3, .3, M.grey, 1.25, BASE + (H + .3) / 2, D / 2 + .12);
+    // terracotta vertical strip
+    box(.16, H, .34, M.terra, -2.15, BASE + H / 2, D / 2 + .1);
+    // vertical louvers on the front-right corner
+    for (let i = 0; i < 14; i++) box(.045, H + .9, .16, M.white, 1.95 + i * .085, BASE + (H + .9) / 2, D / 2 + .24, false);
+    // roof parapet
+    box(W + .1, .35, D + .1, M.grey, 0, top + .17, 0);
+
+    const lit = []; // window meshes grouped per floor (for the intro)
+    for (let f = 0; f < FLOORS; f++) {
+      const y = BASE + f * FH + .5;
+      // front balconies (protruding white slabs + glass railing)
+      [-1.65, .1].forEach(x => {
+        box(1.45, .12, .75, M.white, x, y - .45, D / 2 + .38);
+        const r = plane(1.4, .42, M.glassRail, x, y - .2, D / 2 + .75);
+        r.material.side = THREE.DoubleSide;
+      });
+      // front windows
+      [[-1.65, 1.1], [.1, 1.1], [-1.15, .5], [1.25, .5]].forEach(([x, w], k) => {
+        const on = Math.random() > .25;
+        const m = plane(w, .62, on ? winMats[f] : M.winDark, x, y, D / 2 + (k > 1 ? .28 : .01));
+        if (on) lit.push(m);
+      });
+      // terracotta sill accents under front pilaster windows
+      box(.5, .14, .05, M.terra, -1.15, y - .38, D / 2 + .28, false);
+      box(.5, .14, .05, M.terra, 1.25, y - .38, D / 2 + .28, false);
+      // side (left) windows + small balconies
+      [-1.2, .9].forEach(z => {
+        plane(.9, .6, Math.random() > .3 ? winMats[f] : M.winDark, -W / 2 - .01, y, z, -Math.PI / 2);
+      });
+      box(.6, .1, 1.2, M.white, -W / 2 - .3, y - .45, .9);
+      box(.08, .14, 1.2, M.terra, -W / 2 - .6, y - .38, .9, false);
+      // back windows
+      [-1.5, .5].forEach(x => plane(.9, .6, Math.random() > .5 ? winMats[f] : M.winDark, x, y, -D / 2 - .01, Math.PI));
+      // floor bands
+      box(W + .06, .06, D + .06, M.grey, 0, BASE + (f + 1) * FH, 0, false);
+    }
+
+    /* ground, road, crossing */
+    const ground = new THREE.Mesh(new THREE.CircleGeometry(40, 64), M.ground);
+    ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    const road = new THREE.Mesh(new THREE.PlaneGeometry(80, 4.5), M.road);
+    road.rotation.x = -Math.PI / 2; road.position.set(0, .01, 5.6); road.receiveShadow = true; scene.add(road);
+    for (let i = 0; i < 7; i++) {
+      const s = new THREE.Mesh(new THREE.PlaneGeometry(.35, 3.6), M.stripe);
+      s.rotation.x = -Math.PI / 2; s.position.set(-5.5 + i * .7, .02, 5.6); scene.add(s);
+    }
+    const sidewalk = new THREE.Mesh(new THREE.BoxGeometry(80, .12, 1.2), new THREE.MeshStandardMaterial({ color: 0x3a4552, roughness: 1 }));
+    sidewalk.position.set(0, .06, 2.9); sidewalk.receiveShadow = true; scene.add(sidewalk);
+
+    /* light trails (car head/tail lights, as in the night render) */
+    const trails = [];
+    const trailGeo = new THREE.BoxGeometry(2.6, .04, .05);
+    for (let i = 0; i < 10; i++) {
+      const red = i % 2 === 0;
+      const m = new THREE.Mesh(trailGeo, new THREE.MeshBasicMaterial({ color: red ? 0xff3b3b : 0xfff1d6, transparent: true, opacity: .85, blending: THREE.AdditiveBlending }));
+      m.position.set(-40 + Math.random() * 80, .25 + Math.random() * .1, red ? 4.7 : 6.5);
+      m.userData.v = (red ? 1 : -1) * (5 + Math.random() * 6);
+      scene.add(m); trails.push(m);
+    }
+
+    /* street lamps */
+    const lampsList = [];
+    const lampMat = new THREE.MeshBasicMaterial({ color: 0xfff3dc });
+    [-7, 7].forEach(x => {
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(.04, .05, 4.2, 8), M.grey);
+      pole.position.set(x, 2.1, 3.3); scene.add(pole);
+      const head = new THREE.Mesh(new THREE.SphereGeometry(.12, 12, 12), lampMat); head.position.set(x, 4.2, 3.6); scene.add(head);
+      const pl = new THREE.PointLight(0xfff0d0, .8, 9, 2); pl.position.copy(head.position); scene.add(pl);
+      head.userData.light = pl; lampsList.push(head);
+    });
+
+    /* floating particles */
+    const P = 500, pPos = new Float32Array(P * 3);
+    for (let i = 0; i < P; i++) { pPos[i * 3] = (Math.random() - .5) * 40; pPos[i * 3 + 1] = Math.random() * 18; pPos[i * 3 + 2] = (Math.random() - .5) * 30; }
+    const pGeo = new THREE.BufferGeometry(); pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+    const pMat = new THREE.PointsMaterial({ color: 0xcfe3f5, size: .05, transparent: true, opacity: .7, depthWrite: false });
+    const points = new THREE.Points(pGeo, pMat); scene.add(points);
+
+    /* state animated by GSAP */
+    // intro animates angle/height/radius; scroll animates spin/rise/zoom (kept separate so tweens never fight)
+    const state = { angle: -.5, height: 4.5, radius: 26, lookY: 5, spin: 0, glow: 1, rise: 0, zoom: 0 };
+    const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+    addEventListener('pointermove', e => { mouse.tx = e.clientX / innerWidth - .5; mouse.ty = e.clientY / innerHeight - .5; });
+
+    tower.position.y = 0;
+    function resize() {
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      // shift the tower to the right on wide screens so the headline has room
+      if (w >= 1024) camera.setViewOffset(w, h, -w * .2, 0, w, h); else { camera.clearViewOffset(); }
+      state.radius = w < 640 ? 38 : w < 1024 ? 31 : 26;
+      camera.updateProjectionMatrix();
+    }
+    addEventListener('resize', resize); resize();
+
+    let visible = true;
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
+
+    const clock = new THREE.Clock();
+    function frame() {
+      requestAnimationFrame(frame);
+      if (!visible) return;
+      const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
+      mouse.x += (mouse.tx - mouse.x) * .05; mouse.y += (mouse.ty - mouse.y) * .05;
+      const a = state.angle + state.spin + (reduce ? 0 : Math.sin(t * .12) * .12) + mouse.x * .35;
+      const R = state.radius + state.zoom;
+      camera.position.set(Math.sin(a) * R, state.height + state.rise - mouse.y * 2, Math.cos(a) * R);
+      camera.lookAt(0, state.lookY + state.rise * .4, 0);
+      winMats.forEach((m, i) => { m.emissiveIntensity = m.userData.base * state.glow * (1 + (reduce ? 0 : Math.sin(t * 1.3 + i) * .04)); });
+      if (!reduce) {
+        trails.forEach(m => { m.position.x += m.userData.v * dt; if (m.position.x > 40) m.position.x = -40; if (m.position.x < -40) m.position.x = 40; });
+        const arr = pGeo.attributes.position.array;
+        for (let i = 1; i < arr.length; i += 3) { arr[i] += dt * .25; if (arr[i] > 18) arr[i] = 0; }
+        pGeo.attributes.position.needsUpdate = true;
+      }
+      renderer.render(scene, camera);
+    }
+    winMats.forEach(m => m.userData.base = 0);
+    frame();
+
+    /* intro: build-up + windows lighting floor by floor */
+    function intro() {
+      const tl = gsap.timeline();
+      tl.from(state, { radius: state.radius + 14, height: 14, angle: state.angle + 1.1, duration: 2.6, ease: 'power3.out' }, 0);
+      winMats.forEach((m, i) => tl.to(m.userData, { base: .55 + Math.random() * .45, duration: .5, ease: 'power2.out' }, .5 + i * .14));
+      return tl;
+    }
+
+    /* day / night */
+    const lampsRef = lampsList;
+    function setMode(mode) {
+      const day = mode === 'day', dur = 1.6, ease = 'power2.inOut';
+      gsap.to('.sky-day', { opacity: day ? 1 : 0, duration: dur, ease });
+      gsap.to(state, { glow: day ? .08 : 1, duration: dur, ease });
+      gsap.to(hemi, { intensity: day ? 1.1 : .55, duration: dur, ease });
+      gsap.to(sun, { intensity: day ? 2.4 : .6, duration: dur, ease });
+      gsap.to(sun.color, day ? { r: 1, g: .97, b: .9, duration: dur } : { r: .72, g: .83, b: .94, duration: dur });
+      gsap.to(warm, { intensity: day ? 0 : 1.2, duration: dur });
+      gsap.to(scene.fog.color, day ? { r: .66, g: .82, b: .93, duration: dur } : { r: .043, g: .122, b: .188, duration: dur });
+      gsap.to(M.ground.color, day ? { r: .45, g: .52, b: .58, duration: dur } : { r: .1, g: .145, b: .19, duration: dur });
+      gsap.to(pMat, { opacity: day ? .25 : .7, duration: dur });
+      trails.forEach(m => gsap.to(m.material, { opacity: day ? .15 : .85, duration: dur }));
+      lampsRef.forEach(l => gsap.to(l.userData.light, { intensity: day ? 0 : .8, duration: dur }));
+      gsap.to(sun.position, { x: day ? 10 : -10, duration: dur, ease });
+    }
+
+    return { intro, setMode, state };
+  })();
+  </script>
+  <script>
+  /* =========================================================
+     GSAP — page choreography
+     ========================================================= */
+  gsap.registerPlugin(ScrollTrigger);
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // split text into chars
+  function splitChars(el) {
+    const words = el.textContent.trim().split(/\s+/);
+    el.innerHTML = words.map(w => `<span class="inline-block overflow-hidden align-bottom pb-[.08em] -mb-[.08em]">${[...w].map(c => `<span class="split-char">${c}</span>`).join('')}</span>`).join(' ');
+    return el.querySelectorAll('.split-char');
+  }
+  document.querySelectorAll('.hero-split').forEach(el => {
+    const chars = splitChars(el);
+    // background-clip:text must sit on each char, since they are inline-blocks
+    if (el.hasAttribute('data-silver')) chars.forEach(c => c.classList.add('silver-text'));
+  });
+  // keep <br> in headings by splitting only text nodes per heading
+  document.querySelectorAll('.split-heading').forEach(h => {
+    const html = h.innerHTML; const parts = html.split(/<br[^>]*>/i);
+    h.innerHTML = parts.map(p => { const s = document.createElement('span'); s.textContent = p.replace(/<[^>]+>/g, ''); splitChars(s); return s.innerHTML; }).join('<br class="hidden sm:block" />');
+  });
+
+  /* ---------- preloader ---------- */
+  const counter = { v: 0 };
+  const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  loadTl
+    .from('#loader-logo', { yPercent: 110, duration: .9 })
+    .from('#loader-sub', { yPercent: 110, duration: .7 }, '-=.6')
+    .to('#loader-bar', { scaleX: 1, duration: 1.3, ease: 'power2.inOut' }, '-=.3')
+    .to(counter, { v: 100, duration: 1.3, ease: 'power2.inOut', onUpdate: () => { document.getElementById('loader-count').textContent = Math.round(counter.v) + '%'; } }, '<')
+    .to('#loader', { yPercent: -100, duration: 1, ease: 'expo.inOut' }, '+=.15')
+    .add(() => { document.body.classList.remove('is-loading'); heroIntro(); }, '-=.55')
+    .set('#loader', { display: 'none' });
+  if (reduceMotion) loadTl.progress(1);
+
+  let introPlayed = false;
+  function heroIntro() {
+    if (introPlayed) return; // must only run once, or from-tweens would start at a half-finished state
+    introPlayed = true;
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    tl.add(Scene3D.intro(), 0)
+      .fromTo('#home .hero-split .split-char', { yPercent: 115, rotate: 6 }, { yPercent: 0, rotate: 0, duration: 1.2, stagger: .045 }, .1)
+      .fromTo('#home .hero-fade', { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1, stagger: .12 }, .6)
+      .fromTo('#nav', { y: -40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1 }, .6);
+  }
+
+  /* ---------- hero scroll: camera climbs, tower spins ---------- */
+  gsap.to(Scene3D.state, {
+    spin: 1.2, rise: 6, zoom: 5,
+    scrollTrigger: { trigger: '#home', start: 'top top', end: 'bottom top', scrub: 1 },
+  });
+  gsap.to('#home .split-line', { yPercent: -40, autoAlpha: 0, stagger: .05, ease: 'none',
+    scrollTrigger: { trigger: '#home', start: 'top top', end: '70% top', scrub: true } });
+
+  /* ---------- day / night toggle ---------- */
+  let mode = 'night';
+  document.getElementById('daynight').addEventListener('click', () => {
+    mode = mode === 'night' ? 'day' : 'night';
+    Scene3D.setMode(mode);
+    gsap.to('#dn-knob', { xPercent: mode === 'day' ? 100 : 0, duration: .5, ease: 'power3.inOut' });
+    document.querySelectorAll('.dn-label').forEach(l => {
+      const on = l.dataset.mode === mode;
+      l.classList.toggle('text-navy', on); l.classList.toggle('font-semibold', on);
+    });
+  });
+
+  /* ---------- nav state ---------- */
+  ScrollTrigger.create({ start: 80, onToggle: s => document.getElementById('nav').classList.toggle('nav-scrolled', s.isActive) });
+
+  /* ---------- marquee ---------- */
+  if (!reduceMotion) gsap.to('#marquee', { xPercent: -50, duration: 40, ease: 'none', repeat: -1 });
+
+  /* ---------- generic reveals ---------- */
+  gsap.utils.toArray('.split-heading').forEach(h => {
+    gsap.from(h.querySelectorAll('.split-char'), { yPercent: 110, duration: 1, stagger: .018, ease: 'power4.out',
+      scrollTrigger: { trigger: h, start: 'top 85%' } });
+  });
+  gsap.utils.toArray('.heading-rule').forEach(r => gsap.from(r, { scaleX: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: r, start: 'top 90%' } }));
+  gsap.set('.reveal', { autoAlpha: 0 });
+  ScrollTrigger.batch('.reveal', {
+    start: 'top 88%',
+    onEnter: els => gsap.fromTo(els, { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1, stagger: .1, ease: 'power3.out', overwrite: true }),
+  });
+
+  gsap.utils.toArray('.img-reveal').forEach(w => {
+    gsap.fromTo(w, { clipPath: 'inset(100% 0% 0% 0% round 2rem)' }, { clipPath: 'inset(0% 0% 0% 0% round 2rem)', duration: 1.6, ease: 'expo.inOut', scrollTrigger: { trigger: w, start: 'top 80%' } });
+    const img = w.querySelector('img');
+    gsap.fromTo(img, { yPercent: -12, scale: 1.25 }, { yPercent: 0, scale: 1, ease: 'none', scrollTrigger: { trigger: w, start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
+
+  /* ---------- counters ---------- */
+  document.querySelectorAll('.counter').forEach(c => {
+    const to = parseFloat(c.dataset.to), dec = +(c.dataset.dec || 0), o = { v: 0 };
+    gsap.to(o, { v: to, duration: 2, ease: 'power2.out', scrollTrigger: { trigger: c, start: 'top 90%' },
+      onUpdate: () => c.textContent = o.v.toFixed(dec) });
+  });
+
+  /* ---------- gallery: horizontal scroll on desktop ---------- */
+  const mmq = gsap.matchMedia();
+  mmq.add('(min-width: 1024px)', () => {
+    const track = document.getElementById('gallery-track');
+    const dist = () => track.scrollWidth - innerWidth;
+    const tween = gsap.to(track, { x: () => -dist(), ease: 'none',
+      scrollTrigger: { trigger: '#gallery-pin', start: 'top top', end: () => '+=' + dist(), pin: true, scrub: 1, invalidateOnRefresh: true } });
+    gsap.utils.toArray('.gallery-card img').forEach(img => {
+      gsap.fromTo(img, { scale: 1.25, xPercent: 6 }, { scale: 1.05, xPercent: -6, ease: 'none',
+        scrollTrigger: { trigger: img.parentElement, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true } });
+    });
+  });
+  mmq.add('(max-width: 1023px)', () => {
+    gsap.utils.toArray('.gallery-card').forEach(c => gsap.from(c, { y: 60, autoAlpha: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: c, start: 'top 90%' } }));
+  });
+
+  /* ---------- spec cards ---------- */
+  gsap.from('#spec-grid .spec-card', { y: 70, rotateX: -12, autoAlpha: 0, duration: 1, stagger: { each: .07, grid: 'auto' }, ease: 'power3.out',
+    scrollTrigger: { trigger: '#spec-grid', start: 'top 80%' } });
+  document.querySelectorAll('.spec-card').forEach(card => {
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      card.style.setProperty('--mx', x + 'px'); card.style.setProperty('--my', y + 'px');
+      gsap.to(card, { rotateY: (x / r.width - .5) * 8, rotateX: -(y / r.height - .5) * 8, duration: .5, ease: 'power2.out' });
+    });
+    card.addEventListener('pointerleave', () => gsap.to(card, { rotateX: 0, rotateY: 0, duration: .8, ease: 'elastic.out(1,.5)' }));
+  });
+
+  /* ---------- floor plan rows ---------- */
+  gsap.from('#plan-rooms li', { x: 30, autoAlpha: 0, stagger: .05, duration: .6, ease: 'power2.out', scrollTrigger: { trigger: '#plan-rooms', start: 'top 85%' } });
+
+  /* ---------- cut-section 3D tilt ---------- */
+  document.querySelectorAll('.tilt-card').forEach(card => {
+    const img = card.querySelector('.tilt-img');
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+      gsap.to(card, { rotateY: px * 14, rotateX: -py * 14, transformPerspective: 900, duration: .6, ease: 'power2.out' });
+      gsap.to(img, { x: px * 20, y: py * 20, duration: .6, ease: 'power2.out' });
+    });
+    card.addEventListener('pointerleave', () => { gsap.to(card, { rotateX: 0, rotateY: 0, duration: 1, ease: 'elastic.out(1,.4)' }); gsap.to(img, { x: 0, y: 0, duration: 1 }); });
+  });
+  gsap.to('#cut-section', { backgroundPosition: '0 -200px', ease: 'none', scrollTrigger: { trigger: '#cut-section', scrub: true } });
+
+  /* ---------- map: draw roads, drop pin ---------- */
+  const mapTl = gsap.timeline({ scrollTrigger: { trigger: '#map', start: 'top 75%' } });
+  document.querySelectorAll('#map path:not(#map-pin path)').forEach(p => {
+    const len = p.getTotalLength(); gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+  });
+  mapTl.to('#map .map-river', { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', stagger: .15 })
+    .to('#map .map-road, #map .map-hwy', { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut', stagger: .08 }, 0)
+    .from('#map .map-label', { autoAlpha: 0, y: 8, stagger: .04, duration: .5 }, .8)
+    .from('#map-pin', { y: -120, autoAlpha: 0, duration: 1, ease: 'bounce.out' }, 1.2);
+  gsap.from('#conn-grid .conn-card', { y: 50, autoAlpha: 0, stagger: .08, duration: .9, ease: 'power3.out', scrollTrigger: { trigger: '#conn-grid', start: 'top 85%' } });
+
+  /* ---------- magnetic buttons ---------- */
+  document.querySelectorAll('.magnetic').forEach(b => {
+    b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); gsap.to(b, { x: (e.clientX - r.left - r.width / 2) * .25, y: (e.clientY - r.top - r.height / 2) * .35, duration: .4 }); });
+    b.addEventListener('pointerleave', () => gsap.to(b, { x: 0, y: 0, duration: .7, ease: 'elastic.out(1,.4)' }));
+  });
+
+  /* ---------- custom cursor ---------- */
+  if (matchMedia('(pointer: fine)').matches) {
+    const dot = document.querySelector('.cursor-dot'), ring = document.querySelector('.cursor-ring');
+    const dx = gsap.quickTo(dot, 'x', { duration: .1 }), dy = gsap.quickTo(dot, 'y', { duration: .1 });
+    const rx = gsap.quickTo(ring, 'x', { duration: .45, ease: 'power3' }), ry = gsap.quickTo(ring, 'y', { duration: .45, ease: 'power3' });
+    addEventListener('pointermove', e => { dx(e.clientX); dy(e.clientY); rx(e.clientX); ry(e.clientY); });
+    document.querySelectorAll('a, button, [data-zoom], .tilt-card').forEach(el => {
+      el.addEventListener('pointerenter', () => ring.classList.add('is-hover'));
+      el.addEventListener('pointerleave', () => ring.classList.remove('is-hover'));
+    });
+  }
+
+  addEventListener('load', () => ScrollTrigger.refresh());
+  </script>
+</body>
+</html>
